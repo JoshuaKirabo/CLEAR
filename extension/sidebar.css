@@ -1,0 +1,215 @@
+/* Lives inside the sidebar's shadow root, so the site's styles can't reach in and ours can't leak out. */
+:host
+   {
+      all: initial;
+      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --ink: #0f172a;
+      --muted: #475569;
+      --faint: #94a3b8;
+      --line: #e2e8f0;
+      --surface: #ffffff;
+      --wash: #f8fafc;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+   }
+
+*
+   {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+   }
+
+/* Parked just past the right edge until it's opened. */
+.sidebar
+   {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 2147483647;
+      display: flex;
+      flex-direction: column;
+      width: min(360px, calc(100vw - 48px));
+      height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--line);
+      box-shadow: -12px 0 32px rgba(15, 23, 42, 0.12);
+      transform: translateX(100%);
+      visibility: hidden;
+      transition: transform 200ms var(--ease-out), visibility 0s linear 200ms;
+   }
+
+/* Slides in slower than it leaves, on the same curve iOS uses for drawers. */
+:host([data-open]) .sidebar
+   {
+      transform: none;
+      visibility: visible;
+      transition: transform 300ms var(--ease-drawer), visibility 0s;
+   }
+
+.header
+   {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+   }
+
+.logo
+   {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+   }
+
+.collapse
+   {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: background-color 150ms ease;
+   }
+
+.body
+   {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+   }
+
+.section
+   {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+   }
+
+.section:last-child
+   {
+      border-bottom: none;
+   }
+
+.label
+   {
+      margin-bottom: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+   }
+
+.score
+   {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+   }
+
+.text
+   {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--muted);
+   }
+
+.title
+   {
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--ink);
+   }
+
+.score + .text
+   {
+      margin-top: 8px;
+   }
+
+/* The little pull tab that brings the sidebar back once it's tucked away. */
+.tab
+   {
+      position: fixed;
+      top: 50%;
+      right: 0;
+      z-index: 2147483647;
+      padding: 14px 8px;
+      border: 1px solid var(--line);
+      border-right: none;
+      border-radius: 10px 0 0 10px;
+      background: var(--surface);
+      box-shadow: -4px 0 16px rgba(15, 23, 42, 0.12);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      writing-mode: vertical-rl;
+      cursor: pointer;
+      transform: translate(0, -50%);
+      transition: transform 200ms var(--ease-out) 150ms, visibility 0s;
+   }
+
+/* Hiding the tab while the sidebar is out, and only bringing it back after the sidebar has gone. */
+:host([data-open]) .tab
+   {
+      transform: translate(100%, -50%);
+      visibility: hidden;
+      transition: transform 150ms var(--ease-out), visibility 0s linear 150ms;
+   }
+
+:host([data-mounting]) .tab
+   {
+      transform: translate(100%, -50%);
+      visibility: hidden;
+      transition: none;
+   }
+
+@media (hover: hover) and (pointer: fine)
+   {
+      .collapse:hover
+         {
+            background-color: var(--wash);
+         }
+
+      .tab:hover
+         {
+            background-color: var(--wash);
+         }
+   }
+
+/* Reduced motion swaps the sliding for a quick fade. */
+@media (prefers-reduced-motion: reduce)
+   {
+      .sidebar,
+      :host([data-open]) .sidebar
+         {
+            transform: none;
+            opacity: 0;
+            transition: opacity 200ms ease, visibility 0s linear 200ms;
+         }
+
+      :host([data-open]) .sidebar
+         {
+            opacity: 1;
+            transition: opacity 200ms ease, visibility 0s;
+         }
+
+      .tab,
+      :host([data-open]) .tab
+         {
+            transform: translate(0, -50%);
+         }
+   }

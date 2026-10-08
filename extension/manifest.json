@@ -4,9 +4,12 @@
   "version": "0.1.0",
   "description": "Content and Listing Evaluation for Abuse Reduction",
   "action": {
-    "default_popup": "popup.html",
     "default_title": "CLEAR"
   },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
   "background": {
     "service_worker": "background.js"
   },
@@ -27,8 +30,9 @@
         "https://*.grailed.com/listings/*",
         "https://*.swappa.com/listing/*"
       ],
-      "js": ["content.js"],
-      "css": ["content.css"],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
