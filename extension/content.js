@@ -3,6 +3,9 @@ const PANEL_ID = "clear-panel";
 const MARGIN = 16;
 const CELL = 20;
 
+// Has to match the 150ms exit transition in content.css.
+const EXIT_DURATION = 150;
+
 // Stuff we never want to cover up, like photos, buttons, and links.
 const BUSY_TAGS = "img, video, canvas, svg, picture, iframe, button, a, input, textarea, select";
 
@@ -105,7 +108,6 @@ function placePanel(panel)
 
         // Letting the scan see through the panel so it doesn't count itself as clutter.
         panel.style.pointerEvents = "none";
-        panel.style.visibility = "hidden";
 
         const { cols, rows, sums } = mapScreen(pageColors);
 
@@ -136,7 +138,7 @@ function placePanel(panel)
         panel.style.left = `${left}px`;
         panel.style.top = `${top}px`;
         panel.style.pointerEvents = "";
-        panel.style.visibility = "visible";
+        panel.setAttribute("data-open", "");
     }
 
 function schedulePlace()
@@ -168,11 +170,11 @@ function showPanel()
         panel.querySelector(".clear-close").addEventListener("click", () =>
             {
                 dismissed = true;
-                panel.remove();
+                panel.removeAttribute("data-open");
+                setTimeout(() => panel.remove(), EXIT_DURATION);
             });
 
-        // Hidden until we know where it goes, so it doesn't flash in the wrong spot.
-        panel.style.visibility = "hidden";
+        // Starts closed (hidden by the CSS) until we know where it goes, so it doesn't flash in the wrong spot.
         document.body.appendChild(panel);
         schedulePlace();
     }
@@ -196,10 +198,10 @@ setInterval(() =>
         dismissed = false;
         update();
 
-        // New page means new layout, so hide it and find a fresh empty spot.
+        // New page means new layout, so fade it out and find a fresh empty spot.
         const panel = document.getElementById(PANEL_ID);
         if(!panel) return;
-        panel.style.visibility = "hidden";
+        panel.removeAttribute("data-open");
         schedulePlace();
     }, 1000);
 
