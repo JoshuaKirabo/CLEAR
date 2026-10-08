@@ -10,6 +10,28 @@
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.facebook.com/*",
+        "https://*.craigslist.org/*",
+        "https://*.offerup.com/*",
+        "https://www.ebay.com/itm/*",
+        "https://*.reverb.com/item/*",
+        "https://www.mercari.com/us/item/*",
+        "https://nextdoor.com/*",
+        "https://*.etsy.com/listing/*",
+        "https://*.poshmark.com/listing/*",
+        "https://*.depop.com/products/*",
+        "https://*.vinted.com/items/*",
+        "https://*.grailed.com/listings/*",
+        "https://*.swappa.com/listing/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
